@@ -26,6 +26,7 @@ func main() {
 	r.HandleFunc("/movies/{id}", controllers.UpdateMovies).Methods("PUT")
 	r.HandleFunc("/movies/{id}", controllers.DeleteMovies).Methods("DELETE")
 	r.HandleFunc("/movies", controllers.DeleteAllMovies).Methods("DELETE")
+	r.HandleFunc("/movies/iswatched/", controllers.IsWatched).Methods("GET")
 
 	fmt.Printf("Starting server on port 8080")
 

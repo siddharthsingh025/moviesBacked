@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"example/movieBackend/initializer"
 	models "example/movieBackend/models"
+	"fmt"
 	"log"
 	"time"
 
@@ -98,4 +99,32 @@ func DeleteAllMovies(w http.ResponseWriter, r *http.Request) {
 	initializer.Database.Delete(&movie)
 	json.NewEncoder(w).Encode(movie)
 
+}
+
+func IsWatched(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+
+	id := getMoviewId(params["title"], params["release_date"])
+
+	var movie models.Movie
+	// initializer.Database.First(&movie, params["title"])
+	initializer.Database.First(&movie, id)
+
+	if movie.IsWatched {
+		fmt.Fprintln(w, "current movie is watched earlier")
+	} else {
+		fmt.Fprintln(w, "current movie is not watched yet")
+	}
+
+	json.NewEncoder(w).Encode(movie)
+}
+
+func getMoviewId(title string, releaseDate string) string {
+
+	var movie models.Movie
+
+	initializer.Database.Where(map[string]interface{}{"title": title, "release_date": releaseDate}).First(&movie)
+
+	return movie.ID
 }
